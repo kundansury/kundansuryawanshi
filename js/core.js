@@ -87,10 +87,50 @@ class NavigationManager {
     }
 
     setupMobileToggle() {
+        console.log('Setting up mobile toggle...');
+        console.log('Hamburger element:', this.hamburger);
+        console.log('Nav menu element:', this.navMenu);
+        
         if (this.hamburger && this.navMenu) {
-            this.hamburger.addEventListener('click', () => {
+            console.log('Both elements found, adding click listener');
+            
+            this.hamburger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Hamburger clicked!');
+                console.log('Before toggle - Hamburger active:', this.hamburger.classList.contains('active'));
+                console.log('Before toggle - Menu active:', this.navMenu.classList.contains('active'));
+                
                 this.hamburger.classList.toggle('active');
                 this.navMenu.classList.toggle('active');
+                document.body.classList.toggle('nav-open');
+                
+                console.log('After toggle - Hamburger active:', this.hamburger.classList.contains('active'));
+                console.log('After toggle - Menu active:', this.navMenu.classList.contains('active'));
+                
+                // Force show menu if active
+                if (this.navMenu.classList.contains('active')) {
+                    this.navMenu.style.left = '0';
+                    this.navMenu.style.display = 'flex';
+                } else {
+                    this.navMenu.style.left = '-100%';
+                }
+            });
+            
+            // Also add touch event for mobile devices
+            this.hamburger.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.hamburger.click();
+            });
+        } else {
+            console.error('Hamburger or nav menu element not found!');
+            console.error('Available elements:', {
+                hamburger: document.querySelector('.hamburger'),
+                navMenu: document.querySelector('.nav-menu'),
+                allHamburgers: document.querySelectorAll('.hamburger'),
+                allNavMenus: document.querySelectorAll('.nav-menu')
             });
         }
     }
@@ -476,12 +516,267 @@ function handleTiltLeave(e) {
 }
 
 // ================================================
+// RESPONSIVE FUNCTIONALITY
+// ================================================
+
+// Mobile Navigation Toggle
+function initMobileNavigation() {
+    console.log('Backup mobile navigation initialization...');
+    
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    console.log('Found elements:', { hamburger, navMenu, navLinksCount: navLinks.length });
+    
+    if (hamburger && navMenu) {
+        // Remove any existing event listeners
+        hamburger.removeEventListener('click', handleHamburgerClick);
+        
+        // Add new event listener
+        hamburger.addEventListener('click', handleHamburgerClick);
+        hamburger.addEventListener('touchend', handleHamburgerTouch);
+        
+        console.log('Mobile navigation initialized successfully');
+    } else {
+        console.error('Mobile navigation elements not found');
+        
+        // Try to find elements after a delay
+        setTimeout(() => {
+            const delayedHamburger = document.querySelector('.hamburger');
+            const delayedNavMenu = document.querySelector('.nav-menu');
+            
+            if (delayedHamburger && delayedNavMenu) {
+                delayedHamburger.addEventListener('click', handleHamburgerClick);
+                delayedHamburger.addEventListener('touchend', handleHamburgerTouch);
+                console.log('Mobile navigation initialized with delay');
+            }
+        }, 500);
+    }
+}
+
+function handleHamburgerClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    console.log('Hamburger click handler called');
+    
+    if (hamburger && navMenu) {
+        const isActive = hamburger.classList.contains('active');
+        
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        document.body.classList.toggle('nav-open');
+        
+        // Force styles
+        if (!isActive) {
+            navMenu.style.left = '0';
+            navMenu.style.display = 'flex';
+            navMenu.style.transform = 'translateX(0)';
+            navMenu.style.visibility = 'visible';
+            navMenu.style.opacity = '1';
+        } else {
+            navMenu.style.left = '-100%';
+            navMenu.style.transform = 'translateX(-100%)';
+        }
+        
+        console.log('Menu toggled:', !isActive ? 'opened' : 'closed');
+    }
+}
+
+function handleHamburgerTouch(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    // Trigger click event
+    setTimeout(() => handleHamburgerClick(e), 50);
+}
+
+// Responsive Behavior Handler
+function handleResponsiveBehavior() {
+    const isMobile = window.innerWidth <= 768;
+    const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+    const isDesktop = window.innerWidth > 1024;
+
+    // Adjust particle count based on device
+    if (isMobile) {
+        // Reduce particles on mobile for performance
+        const particles = document.querySelectorAll('.particle');
+        particles.forEach((particle, index) => {
+            if (index > 10) particle.style.display = 'none';
+        });
+    } else if (isTablet) {
+        // Medium particle count on tablet
+        const particles = document.querySelectorAll('.particle');
+        particles.forEach((particle, index) => {
+            if (index > 20) particle.style.display = 'none';
+            else particle.style.display = 'block';
+        });
+    } else {
+        // Full particles on desktop
+        const particles = document.querySelectorAll('.particle');
+        particles.forEach(particle => {
+            particle.style.display = 'block';
+        });
+    }
+
+    // Adjust scroll behavior
+    if (isMobile) {
+        // Disable some hover effects on mobile
+        document.body.classList.add('mobile-device');
+    } else {
+        document.body.classList.remove('mobile-device');
+    }
+}
+
+// Touch and Gesture Support
+function initTouchSupport() {
+    // Add touch classes for better touch device support
+    if ('ontouchstart' in window) {
+        document.body.classList.add('touch-device');
+    }
+
+    // Handle orientation changes
+    window.addEventListener('orientationchange', debounce(() => {
+        setTimeout(() => {
+            handleResponsiveBehavior();
+            window.scrollTo(0, window.scrollY); // Fix scroll position
+        }, 100);
+    }, 250));
+}
+
+// Responsive Image Loading
+function initResponsiveImages() {
+    const images = document.querySelectorAll('img[data-src]');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+    } else {
+        // Fallback for older browsers
+        images.forEach(img => {
+            img.src = img.dataset.src;
+            img.classList.remove('lazy');
+        });
+    }
+}
+
+// Responsive Font Size Adjustment
+function adjustFontSizes() {
+    const screenWidth = window.innerWidth;
+    const root = document.documentElement;
+
+    if (screenWidth <= 480) {
+        root.style.fontSize = '14px';
+    } else if (screenWidth <= 768) {
+        root.style.fontSize = '15px';
+    } else if (screenWidth <= 1024) {
+        root.style.fontSize = '16px';
+    } else {
+        root.style.fontSize = '16px';
+    }
+}
+
+// Responsive Grid Adjustments
+function adjustGridLayouts() {
+    const grids = document.querySelectorAll('.responsive-grid');
+    const screenWidth = window.innerWidth;
+
+    grids.forEach(grid => {
+        if (screenWidth <= 768) {
+            grid.style.gridTemplateColumns = '1fr';
+        } else if (screenWidth <= 1024) {
+            grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        } else {
+            grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+        }
+    });
+}
+
+// Performance Optimization for Mobile
+function optimizeForMobile() {
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // Reduce animation complexity
+        document.body.classList.add('reduced-animations');
+        
+        // Disable expensive effects
+        const expensiveElements = document.querySelectorAll('.expensive-animation');
+        expensiveElements.forEach(el => {
+            el.style.animation = 'none';
+            el.style.transition = 'none';
+        });
+        
+        // Optimize scroll events
+        let ticking = false;
+        function updateScroll() {
+            // Minimal scroll updates for mobile
+            ticking = false;
+        }
+        
+        document.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateScroll);
+                ticking = true;
+            }
+        });
+    }
+}
+
+// Initialize Responsive Features
+function initResponsiveFeatures() {
+    initMobileNavigation();
+    initTouchSupport();
+    initResponsiveImages();
+    handleResponsiveBehavior();
+    adjustFontSizes();
+    adjustGridLayouts();
+    optimizeForMobile();
+
+    // Handle window resize
+    const handleResize = debounce(() => {
+        handleResponsiveBehavior();
+        adjustFontSizes();
+        adjustGridLayouts();
+        optimizeForMobile();
+    }, 250);
+
+    window.addEventListener('resize', handleResize);
+    
+    // Handle device orientation change
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            handleResize();
+        }, 100);
+    });
+}
+
+// ================================================
 // INITIALIZATION
 // ================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded - Initializing...');
+    
     // Initialize core functionality
     new NavigationManager();
+    
+    // Initialize backup mobile navigation
+    initMobileNavigation();
+    
     new CardEffectManager();
     new FloatingSymbolsManager();
     new LazyLoadManager();
@@ -500,6 +795,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize 3D tilt effects
     initTiltEffects();
+
+    // Initialize responsive features
+    initResponsiveFeatures();
 });
 
 // ================================================
@@ -513,3 +811,141 @@ window.SiteUtils = {
     showNotification,
     SITE_CONFIG
 };
+
+// Debug function to test navigation visibility
+function debugNavigation() {
+    console.log('=== NAVIGATION DEBUG ===');
+    const navbar = document.querySelector('.navbar');
+    const navContainer = document.querySelector('.nav-container');
+    const navLogo = document.querySelector('.nav-logo');
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    console.log('Navbar:', navbar, navbar ? getComputedStyle(navbar).display : 'null');
+    console.log('Nav Container:', navContainer, navContainer ? getComputedStyle(navContainer).display : 'null');
+    console.log('Nav Logo:', navLogo, navLogo ? getComputedStyle(navLogo).display : 'null');
+    console.log('Hamburger:', hamburger, hamburger ? getComputedStyle(hamburger).display : 'null');
+    console.log('Nav Menu:', navMenu, navMenu ? getComputedStyle(navMenu).display : 'null');
+    
+    // Force show navigation
+    if (navbar) {
+        navbar.style.display = 'flex';
+        navbar.style.position = 'fixed';
+        navbar.style.top = '0';
+        navbar.style.width = '100%';
+        navbar.style.zIndex = '10000';
+        navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+    }
+    
+    if (navContainer) {
+        navContainer.style.display = 'flex';
+        navContainer.style.justifyContent = 'space-between';
+        navContainer.style.alignItems = 'center';
+        navContainer.style.width = '100%';
+        navContainer.style.padding = '0.75rem 20px';
+    }
+    
+    if (navLogo) {
+        navLogo.style.display = 'flex';
+        navLogo.style.opacity = '1';
+        navLogo.style.visibility = 'visible';
+    }
+    
+    if (hamburger) {
+        hamburger.style.display = 'flex';
+        hamburger.style.opacity = '1';
+        hamburger.style.visibility = 'visible';
+        hamburger.style.background = 'rgba(255, 255, 255, 0.1)';
+        hamburger.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+        hamburger.style.padding = '0.5rem';
+        hamburger.style.borderRadius = '8px';
+    }
+    
+    console.log('Navigation forced to be visible');
+}
+
+// Call debug function on page load
+window.addEventListener('load', () => {
+    setTimeout(debugNavigation, 100);
+});
+
+// Also expose it to window for manual testing
+window.debugNavigation = debugNavigation;
+
+// Simple direct hamburger menu handler
+function setupSimpleHamburgerMenu() {
+    console.log('Setting up simple hamburger menu...');
+    
+    // Wait for elements to be available
+    setTimeout(() => {
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (hamburger && navMenu) {
+            console.log('Simple handler: Found hamburger and nav menu');
+            
+            // Remove any existing listeners to avoid duplicates
+            hamburger.onclick = null;
+            
+            // Add simple click handler
+            hamburger.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Simple handler: Hamburger clicked');
+                
+                // Toggle classes
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                document.body.classList.toggle('nav-open');
+                
+                // Force show/hide with inline styles
+                if (hamburger.classList.contains('active')) {
+                    navMenu.style.cssText = `
+                        left: 0 !important;
+                        display: flex !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                        transform: translateX(0) !important;
+                        position: fixed !important;
+                        top: 70px !important;
+                        width: 100% !important;
+                        height: calc(100vh - 70px) !important;
+                        background: rgba(10, 10, 10, 0.98) !important;
+                        backdrop-filter: blur(30px) !important;
+                        flex-direction: column !important;
+                        justify-content: flex-start !important;
+                        align-items: center !important;
+                        padding: 2rem 1rem !important;
+                        gap: 1rem !important;
+                        z-index: 9999 !important;
+                        transition: all 0.3s ease !important;
+                    `;
+                    console.log('Simple handler: Menu opened');
+                } else {
+                    navMenu.style.cssText = `
+                        left: -100% !important;
+                        transform: translateX(-100%) !important;
+                    `;
+                    console.log('Simple handler: Menu closed');
+                }
+            };
+            
+            // Also add touch handler for mobile
+            hamburger.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                hamburger.click();
+            });
+            
+            console.log('Simple hamburger menu setup complete');
+        } else {
+            console.error('Simple handler: Could not find hamburger or nav menu');
+        }
+    }, 200);
+}
+
+// Call this function multiple times to ensure it works
+window.addEventListener('DOMContentLoaded', setupSimpleHamburgerMenu);
+window.addEventListener('load', setupSimpleHamburgerMenu);
+setTimeout(setupSimpleHamburgerMenu, 500);
+setTimeout(setupSimpleHamburgerMenu, 1000);
