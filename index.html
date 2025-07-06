@@ -19,10 +19,14 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-logo" style="display: flex; align-items: left; margin-right: 0cm;">
-                <h1 style="margin: 0; font-weight: 600; font-size: 3rem; letter-spacing: 0cm;">KS</h1>
-            </div>
-            <ul class="nav-menu">
+            <!-- Left: Logo -->
+            <a href="#home" class="nav-logo">
+                <i class="fas fa-code"></i>
+                <h1>KS</h1>
+            </a>
+            
+            <!-- Center: Navigation Menu -->
+            <ul class="nav-menu" style="gap: 1rem;">
                 <li class="nav-item">
                     <a href="#home" class="nav-link active">Home</a>
                 </li>
@@ -48,10 +52,17 @@
                     <a href="#contact" class="nav-link">Contact</a>
                 </li>
             </ul>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+            
+            <!-- Right: Theme Toggle & Mobile Menu -->
+            <div class="nav-right">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
         </div>
     </nav>
@@ -72,16 +83,16 @@
                         Student
                     </h1>
                     <p class="hero-description">
-                        I aim to apply my technical skills in ML, AI, and web development, combined with strong leadership & teamwork abilities, to deliver impactful solutions that make a difference.
+                        As an AI & Data Science student, My goal is to apply my technical skills in machine learning, web development, and AI, along with strong leadership, collaborative teamwork abilities to display my potential.
                     </p>
                     <div class="hero-buttons">
                         <a href="#contact" class="btn btn-hire">
                             <span>Hire Me</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
-                        <a href="#" class="btn btn-download" id="downloadResume">
+                        <a href="https://drive.google.com/file/d/14TZLyPX5HqxRn25ptTVEwJoqaavB_jsy/view?usp=sharing" class="btn btn-download" id="downloadResume">
                             <i class="fas fa-download"></i>
-                            <span>Download CV</span>
+                            <span> Resume </span>
                         </a>
                     </div>
                 </div>
@@ -93,10 +104,11 @@
                         <div class="social-follow">
                             <span class="follow-text">FOLLOW ME ON :</span>
                             <div class="social-icons">
-                                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                                <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://www.linkedin.com/in/kundansurya/" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://github.com/kundansury" class="social-icon"><i class="fab fa-github"></i></a>
+                                <a href="https://www.instagram.com/soooryawanshi/" class="social-icon"><i class="fab fa-instagram"></i></a>
+                                
+                                
                             </div>
                         </div>
                     </div>
@@ -112,8 +124,7 @@
             <div class="about-content">
                 <div class="about-text">
                     <p class="about-statement">
-                        Passionate AI & Data Science engineering student with a mission to leverage cutting-edge technology for meaningful impact. I believe in continuous learning, collaborative innovation, and the power of data-driven solutions to solve real-world challenges.
-                    </p>
+“What drives me isn’t just building technology; it’s building a better tomorrow. I am deeply motivated to develop solutions that are sustainable, inclusive, and truly improve people’s lives. My journey through leadership roles and social initiatives has shown me the power of working with diverse teams, listening to real problems, and turning empathy into action. Whether it is volunteering in communities, leading student bodies, or collaborating on ideas that push boundaries, I want my work to empower others and create opportunities where they did not exist before. For me, tech is not just a career; it is my way of giving back, one meaningful project at a time.                    </p>
                     
                     <div class="achievements-highlight">
                         <h3>Key Achievements</h3>
@@ -126,29 +137,33 @@
                 </div>
                 
                 <div class="education-timeline">
-                    <h3>Education Timeline</h3>
+                    <h3>Education</h3>
                     <div class="timeline">
                         <div class="timeline-item">
                             <div class="timeline-date">2022-2026</div>
                             <div class="timeline-content">
                                 <h4>BTech in AI & Data Science</h4>
-                                <p>KKWIEER</p>
-                                <span class="grade">CGPA: 7.7</span>
+                                <p>K. K. Wagh Institute of
+Engineering Education and
+Research, Nashik</p>
+                                <span class="grade">CGPA: 7.83</span>
                             </div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-date">HSC</div>
                             <div class="timeline-content">
-                                <h4>Higher Secondary</h4>
-                                <p>Board Examination</p>
+                                <h4>HSC (Class 12th)</h4>
+                                <p>Maharashtra State Board of Secondary &
+Higher Secondary Education</p>
                                 <span class="grade">79.33%</span>
                             </div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-date">SSC</div>
                             <div class="timeline-content">
-                                <h4>Secondary School</h4>
-                                <p>Board Examination</p>
+                                <h4>SSC (Class 10th)</h4>
+                                <p>Maharashtra State Board of Secondary &
+Higher Secondary Education<br>• Secured Rank 1 in School</p>
                                 <span class="grade">93.20%</span>
                             </div>
                         </div>
@@ -196,21 +211,21 @@
                         IoT bus optimization system with RFID ticketing and live tracking for efficient public transportation management.
                     </p>
                     <div class="project-role">
-                        <span class="role-badge">IoT Developer</span>
+                       
                         <span class="role-badge">Database Management</span>
                     </div>
                     <div class="tech-stack">
                         <span class="tech-tag">IoT</span>
-                        <span class="tech-tag">RFID</span>
+                        
                         <span class="tech-tag">MongoDB</span>
-                        <span class="tech-tag">Python</span>
+                        
                     </div>
                 </div>
 
                 <div class="project-card">
                     <div class="project-header">
                         <h3>Voice Commander</h3>
-                        <a href="#" class="project-link">
+                        <a href="https://github.com/kundansury/Voice-Commander" class="project-link">
                             <i class="fab fa-github"></i>
                         </a>
                     </div>
@@ -218,14 +233,12 @@
                         Python-based speech assistant for web automation, enabling voice-controlled navigation and task execution.
                     </p>
                     <div class="project-role">
-                        <span class="role-badge">Full Stack Dev</span>
-                        <span class="role-badge">AI Integration</span>
+                        <span class="role-badge">Python</span>
+                        <span class="role-badge">API Integration</span>
                     </div>
                     <div class="tech-stack">
-                        <span class="tech-tag">Python</span>
+                        
                         <span class="tech-tag">Speech Recognition</span>
-                        <span class="tech-tag">Automation</span>
-                        <span class="tech-tag">NLP</span>
                     </div>
                 </div>
             </div>
@@ -529,9 +542,8 @@
                     </div>
 
                     <div class="social-links-contact">
-                        <a href="#" class="social-link-contact"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-link-contact"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-link-contact"><i class="fas fa-code"></i></a>
+                        <a href="https://www.linkedin.com/in/kundansurya/" class="social-link-contact"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kundansury" class="social-link-contact"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
 
@@ -558,6 +570,106 @@
                         </button>
                     </form>
                 </div>
+                <!-- EmailJS integration -->
+                <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+                <script>
+                    (function(){
+                        emailjs.init("3JDc9XQO8p0FYa7Pv"); // Your EmailJS public key
+                    })();
+
+                    document.getElementById('contactForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        // Show loading state
+                        const submitBtn = this.querySelector('button[type="submit"]');
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                        submitBtn.disabled = true;
+                        
+                        // Send email using EmailJS
+                        emailjs.sendForm('service_hwabufl', 'template_j6vgcdk', this)
+                            .then(function() {
+                                // Success
+                                submitBtn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
+                                submitBtn.style.background = 'linear-gradient(135deg, #22c55e, #059669)';
+                                document.getElementById('contactForm').reset();
+                                
+                                // Reset button after 3 seconds
+                                setTimeout(function() {
+                                    submitBtn.innerHTML = originalText;
+                                    submitBtn.disabled = false;
+                                    submitBtn.style.background = '';
+                                }, 3000);
+                                
+                                // Show success message
+                                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                            }, function(error) {
+                                // Error
+                                console.error('EmailJS Error:', error);
+                                submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Try Again';
+                                submitBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                                submitBtn.disabled = false;
+                                
+                                // Reset button after 3 seconds
+                                setTimeout(function() {
+                                    submitBtn.innerHTML = originalText;
+                                    submitBtn.style.background = '';
+                                }, 3000);
+                                
+                                // Show error message
+                                showNotification('Failed to send message. Please try again or contact directly.', 'error');
+                            });
+                    });
+                    
+                    // Notification function
+                    function showNotification(message, type) {
+                        // Create notification element
+                        const notification = document.createElement('div');
+                        notification.className = `notification ${type}`;
+                        notification.innerHTML = `
+                            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                            <span>${message}</span>
+                        `;
+                        
+                        // Add styles
+                        notification.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            padding: 1rem 1.5rem;
+                            background: ${type === 'success' ? 'rgba(34, 197, 94, 0.9)' : 'rgba(239, 68, 68, 0.9)'};
+                            color: white;
+                            border-radius: 10px;
+                            backdrop-filter: blur(10px);
+                            border: 1px solid ${type === 'success' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+                            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                            z-index: 10000;
+                            transform: translateX(400px);
+                            transition: transform 0.3s ease;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                            font-weight: 500;
+                            max-width: 350px;
+                        `;
+                        
+                        // Add to page
+                        document.body.appendChild(notification);
+                        
+                        // Animate in
+                        setTimeout(() => {
+                            notification.style.transform = 'translateX(0)';
+                        }, 100);
+                        
+                        // Remove after 5 seconds
+                        setTimeout(() => {
+                            notification.style.transform = 'translateX(400px)';
+                            setTimeout(() => {
+                                document.body.removeChild(notification);
+                            }, 300);
+                        }, 5000);
+                    }
+                </script>
             </div>
         </div>
     </section>

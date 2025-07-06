@@ -765,6 +765,33 @@ function initResponsiveFeatures() {
 }
 
 // ================================================
+// THEME TOGGLE FUNCTIONALITY
+// ================================================
+
+function initThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle?.querySelector('i');
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            // Toggle theme classes or functionality here
+            console.log('Theme toggle clicked');
+            
+            // Toggle icon
+            if (themeIcon) {
+                if (themeIcon.classList.contains('fa-sun')) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                } else {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            }
+        });
+    }
+}
+
+// ================================================
 // INITIALIZATION
 // ================================================
 
@@ -776,6 +803,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize backup mobile navigation
     initMobileNavigation();
+    
+    // Initialize theme toggle
+    initThemeToggle();
     
     new CardEffectManager();
     new FloatingSymbolsManager();
@@ -798,6 +828,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize responsive features
     initResponsiveFeatures();
+    
+    // Initialize theme toggle
+    initThemeToggle();
 });
 
 // ================================================
