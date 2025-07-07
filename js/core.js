@@ -84,12 +84,16 @@ class NavigationManager {
         this.setupMobileToggle();
         this.setupNavLinks();
         this.setupActiveHighlighting();
+        this.setupMobileOptimizations();
     }
 
     setupMobileToggle() {
         console.log('Setting up mobile toggle...');
         console.log('Hamburger element:', this.hamburger);
         console.log('Nav menu element:', this.navMenu);
+        
+        // Track menu state
+        this.isMenuOpening = false;
         
         if (this.hamburger && this.navMenu) {
             console.log('Both elements found, adding click listener');
@@ -101,6 +105,9 @@ class NavigationManager {
                 console.log('Hamburger clicked!');
                 console.log('Before toggle - Hamburger active:', this.hamburger.classList.contains('active'));
                 console.log('Before toggle - Menu active:', this.navMenu.classList.contains('active'));
+                
+                // Set flag to prevent immediate closing
+                this.isMenuOpening = !this.navMenu.classList.contains('active');
                 
                 this.hamburger.classList.toggle('active');
                 this.navMenu.classList.toggle('active');
@@ -115,15 +122,34 @@ class NavigationManager {
                     this.navMenu.style.display = 'flex';
                 } else {
                     this.navMenu.style.left = '-100%';
+                    document.body.classList.remove('nav-open');
+                }
+                
+                // Reset flag after a short delay
+                if (this.isMenuOpening) {
+                    setTimeout(() => {
+                        this.isMenuOpening = false;
+                    }, 300);
                 }
             });
             
-            // Also add touch event for mobile devices
-            this.hamburger.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.hamburger.click();
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (this.navMenu.classList.contains('active')) {
+                    // Don't close if clicking on hamburger or nav menu
+                    if (!this.hamburger.contains(e.target) && !this.navMenu.contains(e.target)) {
+                        this.closeMenu();
+                    }
+                }
             });
+            
+            // Handle escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.navMenu.classList.contains('active')) {
+                    this.closeMenu();
+                }
+            });
+            
         } else {
             console.error('Hamburger or nav menu element not found!');
             console.error('Available elements:', {
@@ -135,25 +161,39 @@ class NavigationManager {
         }
     }
 
+    closeMenu() {
+        if (this.hamburger && this.navMenu) {
+            this.hamburger.classList.remove('active');
+            this.navMenu.classList.remove('active');
+            this.navMenu.style.left = '-100%';
+            document.body.classList.remove('nav-open');
+        }
+    }
+
     setupNavLinks() {
         this.navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
-                // Close mobile menu
-                if (this.hamburger && this.navMenu) {
-                    this.hamburger.classList.remove('active');
-                    this.navMenu.classList.remove('active');
-                }
-
-                const href = link.getAttribute('href');
-                
-                // If it's an external page, let it navigate normally
-                if (href.includes('.html')) {
+                // Don't close menu immediately if it was just opened
+                if (this.isMenuOpening) {
                     return;
                 }
                 
-                // If it's a section link, prevent default and scroll
+                const href = link.getAttribute('href');
+                
+                // If it's an external page, let it navigate normally and close menu
+                if (href.includes('.html')) {
+                    this.closeMenu();
+                    return;
+                }
+                
+                // If it's a section link, prevent default, scroll, and close menu
                 e.preventDefault();
                 this.scrollToSection(href);
+                
+                // Close menu after navigation
+                setTimeout(() => {
+                    this.closeMenu();
+                }, 100);
             });
         });
     }
@@ -189,6 +229,37 @@ class NavigationManager {
                 }
             });
         }, SITE_CONFIG.debounceDelay));
+    }
+    
+    // Additional mobile-specific fixes
+    setupMobileOptimizations() {
+        // Prevent iOS Safari zoom on input focus
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            const viewport = document.querySelector('meta[name=viewport]');
+            if (viewport) {
+                viewport.setAttribute('content', 
+                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+                );
+            }
+        }
+        
+        // Prevent menu closing on touch scroll within menu
+        if (this.navMenu) {
+            this.navMenu.addEventListener('touchmove', (e) => {
+                e.stopPropagation();
+            });
+            
+            this.navMenu.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            });
+        }
+        
+        // Handle window resize to close menu
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && this.navMenu.classList.contains('active')) {
+                this.closeMenu();
+            }
+        });
     }
 }
 
