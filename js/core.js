@@ -85,6 +85,12 @@ class NavigationManager {
         this.setupNavLinks();
         this.setupActiveHighlighting();
         this.setupMobileOptimizations();
+        this.fixMobileNavigation();
+        
+        // Debug navigation on mobile
+        if (window.innerWidth <= 768) {
+            this.debugNavigation();
+        }
     }
 
     setupMobileToggle() {
@@ -167,6 +173,10 @@ class NavigationManager {
             this.navMenu.classList.remove('active');
             this.navMenu.style.left = '-100%';
             document.body.classList.remove('nav-open');
+            
+            // Ensure body scrolling is re-enabled
+            document.body.style.overflow = '';
+            document.body.style.position = '';
         }
     }
 
@@ -181,31 +191,92 @@ class NavigationManager {
                 const href = link.getAttribute('href');
                 
                 // If it's an external page, let it navigate normally and close menu
-                if (href.includes('.html')) {
+                if (href.includes('.html') || href.startsWith('http')) {
                     this.closeMenu();
                     return;
                 }
                 
-                // If it's a section link, prevent default, scroll, and close menu
-                e.preventDefault();
-                this.scrollToSection(href);
-                
-                // Close menu after navigation
-                setTimeout(() => {
-                    this.closeMenu();
-                }, 100);
+                // If it's a section link, handle navigation
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    
+                    // Close menu first for mobile
+                    if (window.innerWidth <= 768) {
+                        this.closeMenu();
+                        // Wait for menu close animation before scrolling
+                        setTimeout(() => {
+                            this.scrollToSection(href);
+                        }, 350);
+                    } else {
+                        // Desktop - scroll immediately
+                        this.scrollToSection(href);
+                    }
+                }
             });
         });
     }
 
     scrollToSection(target) {
-        const targetSection = document.querySelector(target);
+        console.log('Scrolling to section:', target);
+        
+        // Clean up the target selector
+        const cleanTarget = target.startsWith('#') ? target : `#${target}`;
+        const targetSection = document.querySelector(cleanTarget);
+        
+        console.log('Target section found:', targetSection);
+        
         if (targetSection) {
-            const offsetTop = targetSection.offsetTop - SITE_CONFIG.scrollOffset;
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
+            // Calculate offset based on screen size
+            let offset = SITE_CONFIG.scrollOffset;
+            if (window.innerWidth <= 768) {
+                offset = 100; // Larger offset for mobile to account for navbar
+            }
+            
+            const offsetTop = targetSection.offsetTop - offset;
+            
+            // Ensure we don't scroll to negative positions
+            const scrollTop = Math.max(0, offsetTop);
+            
+            console.log('Scrolling to position:', scrollTop);
+            
+            // Use both scrollTo and scrollIntoView for better compatibility
+            try {
+                window.scrollTo({
+                    top: scrollTop,
+                    behavior: 'smooth'
+                });
+            } catch (e) {
+                // Fallback for older browsers
+                console.log('Using fallback scroll method');
+                targetSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                });
+            }
+            
+            // Update active link after scrolling
+            setTimeout(() => {
+                this.updateActiveLink(cleanTarget);
+            }, 300);
+        } else {
+            console.error('Section not found:', cleanTarget);
+            // List all available sections for debugging
+            const allSections = document.querySelectorAll('section');
+            console.log('Available sections:', Array.from(allSections).map(s => s.id));
+        }
+    }
+
+    updateActiveLink(target) {
+        // Remove active class from all links
+        this.navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Add active class to current link
+        const activeLink = document.querySelector(`.nav-link[href="${target}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
         }
     }
 
@@ -260,6 +331,43 @@ class NavigationManager {
                 this.closeMenu();
             }
         });
+    }
+
+    // Enhanced mobile navigation debugging
+    debugNavigation() {
+        console.log('Navigation Debug Info:');
+        console.log('- Hamburger element:', this.hamburger);
+        console.log('- Nav menu element:', this.navMenu);
+        console.log('- Nav links count:', this.navLinks.length);
+        console.log('- Window width:', window.innerWidth);
+        console.log('- Is mobile:', window.innerWidth <= 768);
+        
+        // Test each nav link
+        this.navLinks.forEach((link, index) => {
+            console.log(`- Link ${index}:`, link.getAttribute('href'), link.textContent.trim());
+        });
+    }
+
+    // Handle mobile-specific navigation issues
+    fixMobileNavigation() {
+        // Ensure all navigation links work on mobile
+        if (window.innerWidth <= 768) {
+            this.navLinks.forEach(link => {
+                // Add touch events for better mobile support
+                link.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    const href = link.getAttribute('href');
+                    
+                    if (href.startsWith('#')) {
+                        // Close menu and scroll
+                        this.closeMenu();
+                        setTimeout(() => {
+                            this.scrollToSection(href);
+                        }, 350);
+                    }
+                });
+            });
+        }
     }
 }
 
